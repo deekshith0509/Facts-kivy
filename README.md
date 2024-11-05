@@ -21,8 +21,7 @@ Awesome Facts is a KivyMD application that fetches random facts from an API and 
 ### Setup
 
 1. Clone this repository:
-
-   ```bash
+```
 git clone https://github.com/deekshith0509/MetroNavigator-WebApp.git
 cd MetroNavigator-WebApp
 ```
