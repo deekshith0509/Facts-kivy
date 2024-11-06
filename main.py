@@ -1,3 +1,4 @@
+from kivy.app import App
 import os
 from kivy.lang import Builder
 from kivy.properties import ObjectProperty, StringProperty, BooleanProperty
@@ -17,18 +18,21 @@ import json
 from datetime import datetime
 
 KV = '''
+
+
+
 <FactCard>:
     orientation: 'vertical'
     padding: dp(8)
     size_hint: None, None
     size: dp(280), dp(140)
-    pos_hint: {'center_x': .5}
-    elevation: 3
+    elevation: 4
     md_bg_color: app.theme_cls.bg_light
-
+    pos_hint: {'center_y':0.35, 'center_x': 0.5}
     MDLabel:
         text: root.fact_text
-        theme_text_color: "Secondary"
+        theme_text_color: "Custom"
+        text_color: app.theme_cls.text_color  # This will update text color based on the theme
         size_hint_y: None
         height: self.texture_size[1]
         padding: dp(8), dp(8)
@@ -36,87 +40,126 @@ KV = '''
 
     MDLabel:
         text: root.timestamp
-        theme_text_color: "Hint"
+        theme_text_color: "Custom"
+        text_color: app.theme_cls.text_color  # This will update text color based on the theme
         size_hint_y: None
         height: dp(20)
         font_style: 'Caption'
         halign: 'right'
         padding_x: dp(8)
 
+
 <MainScreen>:
     data_label: data_label
     category_label: category_label
     history_list: history_list
-    
-    MDBoxLayout:
+
+    orientation: 'vertical'
+    spacing: dp(8)
+    padding: dp(8)
+    md_bg_color: app.theme_cls.bg_normal
+
+    MDTopAppBar:
+        title: "Awesome Facts"
+        pos_hint: {"top": 1}
+        right_action_items: [['history', lambda x: root.show_history()], ['theme-light-dark', lambda x: app.toggle_theme()]]
+
+    BoxLayout:
         orientation: 'vertical'
-        spacing: dp(16)
-        padding: dp(16)
-        md_bg_color: app.theme_cls.bg_normal
+        spacing: dp(8)
+        padding: dp(8)
         
-        MDTopAppBar:
-            title: "Awesome Facts"
-            elevation: 2
-            pos_hint: {"top": 1}
-            right_action_items: [['history', lambda x: root.show_history()], ['theme-light-dark', lambda x: app.toggle_theme()]]
-            
-        MDBoxLayout:
+
+        pos_hint: {'center_y':0.35, 'center_x': 0.5}
+
+        MDCard:
             orientation: 'vertical'
-            spacing: dp(16)
-            adaptive_height: True
-            padding: [0, dp(20), 0, 0]
-            
-            MDCard:
-                orientation: 'vertical'
-                padding: dp(16)
-                spacing: dp(8)
-                size_hint: None, None
-                size: dp(300), dp(200)
-                pos_hint: {'center_x': .5}
-                elevation: 3
-                md_bg_color: app.theme_cls.bg_light
-                
-                MDLabel:
-                    id: data_label
-                    text: 'Welcome! Click the button to fetch a fact!'
-                    theme_text_color: "Primary"
-                    halign: 'center'
-                    valign: 'center'
-                    
-                MDLabel:
-                    id: category_label
-                    text: ''
-                    theme_text_color: "Secondary"
-                    font_style: 'Caption'
-                    halign: 'center'
-                    size_hint_y: None
-                    height: self.texture_size[1]
-                    
-            MDBoxLayout:
-                adaptive_height: True
-                spacing: dp(8)
-                padding: [dp(8), 0, dp(8), 0]
-                pos_hint: {'center_x': .5}
-                
-                MDRaisedButton:
-                    text: 'Fetch Random Fact'
-                    on_release: root.fetch_data('random')
-                    md_bg_color: app.theme_cls.primary_color
-                    
-                MDRaisedButton:
-                    text: 'Tech Fact'
-                    on_release: root.fetch_data('tech')
-                    md_bg_color: app.theme_cls.accent_color
-                    
+            padding: dp(16)
+            spacing: dp(12)
+            size: dp(220), dp(120)
+            elevation: 4
+            md_bg_color: app.theme_cls.bg_light
+
+            MDLabel:
+                id: data_label
+                text: 'Welcome! Click the button to fetch a fact!'
+                theme_text_color: "Custom"
+                text_color: app.theme_cls.text_color 
+                halign: 'center'
+                valign: 'center'
+                font_style: 'H6'
+
+            MDLabel:
+                id: category_label
+                text: ''
+                theme_text_color: "Custom"
+                text_color: app.theme_cls.text_color
+                font_style: 'Caption'
+                halign: 'center'
+                size_hint_y: None
+                height: self.texture_size[1]
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: dp(50)
+            padding: dp(8)
+            spacing: dp(12)
+
+            MDRaisedButton:
+                text: 'Fetch Random Fact'
+                on_release: root.fetch_data('random')
+                md_bg_color: app.theme_cls.primary_color
+
+                width: dp(160)
+                elevation_normal: 8
+                elevation_on_press: 12
+
+            MDRaisedButton:
+                text: 'Tech Fact'
+                on_release: root.fetch_data('tech')
+                md_bg_color: app.theme_cls.accent_color
+                size_hint_x: None
+                width: dp(160)
+                elevation_normal: 8
+                elevation_on_press: 12
+
         ScrollView:
             id: history_scroll
-            size_hint_y: None
-            height: dp(200)
-            
+            size_hint_y: 1
+
             MDList:
                 id: history_list
                 spacing: dp(8)
                 padding: dp(8)
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: dp(50)
+            padding: dp(8)
+            spacing: dp(8)
+            pos_hint: {'center_x': .5}
+
+            MDRaisedButton:
+                text: 'Clear History'
+                on_release: root.clear_history()
+                md_bg_color: app.theme_cls.error_color
+                size_hint_x: None
+                width: dp(160)
+                elevation_normal: 8
+                elevation_on_press: 12
+
+            MDRaisedButton:
+                text: 'Refresh'
+                on_release: root.fetch_data('random')
+                md_bg_color: app.theme_cls.primary_color
+                size_hint_x: None
+                width: dp(160)
+                elevation_normal: 8
+                elevation_on_press: 12
+
+
 '''
 
 class FactCard(MDCard):
@@ -130,14 +173,14 @@ class MainScreen(MDScreen):
     loading = BooleanProperty(False)
     facts_history = []
     max_history = 10
+
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.dialog = None
-        url = 'https://facts7878.glitch.me/' 
-        requests.get(url)
         Clock.schedule_once(self.load_history)
-        
+        app = App.get_running_app()
+        self.user_data_dir = app.user_data_dir
     def fetch_data(self, category='random'):
         if self.loading:
             toast("Please wait, already fetching data...")
@@ -214,7 +257,8 @@ class MainScreen(MDScreen):
         try:
             # Construct the full path for the facts_history.json file
             file_path = os.path.join(self.user_data_dir, 'facts_history.json')
-            
+            url = 'https://facts7878.glitch.me/' 
+            requests.get(url)
             with open(file_path, 'r') as f:
                 self.facts_history = json.load(f)
                 self.update_history_list()
@@ -277,12 +321,33 @@ class MainScreen(MDScreen):
         )
         dialog.open()
         
-    def clear_history(self, dialog):
+    # When calling clear_history, pass the dialog object
+    def show_clear_history_dialog(self):
+        dialog = MDDialog(
+            title="Clear History",
+            text="Are you sure you want to clear the history?",
+            size_hint=(0.8, 1),
+            buttons=[
+                MDRaisedButton(
+                    text="CANCEL",
+                    on_release=lambda x: dialog.dismiss()
+                ),
+                MDRaisedButton(
+                    text="CLEAR",
+                    on_release=lambda x: self.clear_history(dialog)
+                )
+            ]
+        )
+        dialog.open()
+
+    def clear_history(self, dialog=None):
         self.facts_history.clear()
         self.save_history()
         self.update_history_list()
-        dialog.dismiss()
+        if dialog:
+            dialog.dismiss()  # Now dialog won't be None
         toast("History cleared")
+
 
 class FactsApp(MDApp):
     def build(self):
@@ -290,6 +355,7 @@ class FactsApp(MDApp):
         self.theme_cls.accent_palette = "Teal"
         self.theme_cls.theme_style = "Light"
         Builder.load_string(KV)
+        print(self.user_data_dir)
         return MainScreen()
         
     def toggle_theme(self):
