@@ -134,6 +134,8 @@ class MainScreen(MDScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.dialog = None
+        url = 'https://facts7878.glitch.me/' 
+        requests.get(url)
         Clock.schedule_once(self.load_history)
         
     def fetch_data(self, category='random'):
@@ -296,6 +298,4 @@ class FactsApp(MDApp):
         )
 
 if __name__ == '__main__':
-    url = 'https://facts7878.glitch.me/' 
-    requests.get(url)
     FactsApp().run()
