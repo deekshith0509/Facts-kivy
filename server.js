@@ -6,6 +6,7 @@ const port = 3000;
 // Enable CORS for all routes
 app.use(cors());
 
+
 // Sample facts data
 const facts = {
     random: [
