@@ -10,6 +10,7 @@ orientation = portrait
 requirements = python3,kivy,kivymd,markdown,requests,materialyoucolor,exceptiongroup,asyncgui,asynckivy
 fullscreen = 0
 version = 0.2
+android.accept_sdk_license = True 
 android.permissions = INTERNET,WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE
 presplash.filename = presplash.png  
 icon.filename = icon.png
